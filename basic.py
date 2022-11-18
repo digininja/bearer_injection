@@ -13,18 +13,15 @@ def request(flow: http.HTTPFlow) -> None:
 
     url_parsed = urlparse(flow.request.url)
     path = url_parsed.path
+    body = flow.request.content.decode("utf-8")
+
     logging.info ("URL: " + flow.request.url)
     logging.info ("Path: " + path)
     logging.info ("Client ID: " + client_id)
+    logging.info ("Body: " + body)
 
-    if flow.request.method in ["POST", "PUT", "PATCH"] and flow.request.headers["Content-Type"] == "application/json":
-        body = flow.request.content.decode("utf-8")
-        logging.info ("Body: " + body)
-        token = gen_hash (path, client_id, salt, body)
-    else:
-        #logging.info ("Request is GET")
-        token = gen_hash (path, client_id, salt, "")
-
+    token = gen_hash (path, client_id, salt, body)
     logging.info ("Token: " + token)
+
     flow.request.headers["bearer"] = token
     flow.request.headers["client-id"] = client_id
