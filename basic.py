@@ -1,4 +1,3 @@
-import urllib.parse
 import logging
 import hashlib
 from urllib.parse import urlparse
